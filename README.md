@@ -2,6 +2,8 @@
 
 Cursor proximity as a CSS input.
 
+[Demo site](https://project-near-field.vercel.app/) · [Lab](https://project-near-field.vercel.app/lab) · [npm](https://www.npmjs.com/package/near-field)
+
 Hover is binary. CSS has nothing between "not hovering" and "hovering", so every effect either snaps on or stays off. near-field provides the continuum: one tiny import exposes how close the pointer is to an element as CSS custom properties, and ships three pre-tuned effects built on that primitive.
 
 - `--nf`: eased proximity, 0 far away to 1 touching the element

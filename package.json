@@ -20,7 +20,7 @@
     "type": "git",
     "url": "git+https://github.com/edward-126/near-field.git"
   },
-  "homepage": "https://github.com/edward-126/near-field#readme",
+  "homepage": "https://project-near-field.vercel.app",
   "bugs": "https://github.com/edward-126/near-field/issues",
   "type": "module",
   "main": "./dist/index.cjs",
