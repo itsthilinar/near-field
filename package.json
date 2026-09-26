@@ -1,6 +1,6 @@
 {
   "name": "near-field",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Cursor proximity as a CSS input. One tiny import exposes how close the pointer is to an element as custom properties, plus three pre-tuned effects built on that primitive.",
   "keywords": [
     "proximity",
@@ -31,6 +31,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./vanilla": {
+      "types": "./dist/vanilla.d.ts",
+      "import": "./dist/vanilla.js",
+      "require": "./dist/vanilla.cjs"
     }
   },
   "files": [
@@ -46,6 +51,11 @@
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

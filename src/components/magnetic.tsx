@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import type * as React from "react";
 import { createDriver, type Driver } from "../internal/driver";
-import { usePrefersReducedMotion } from "../reduced-motion";
+import { usePrefersReducedMotion } from "../use-reduced-motion";
 import type { Feel } from "../spring";
 import { useNearField } from "../use-near-field";
 

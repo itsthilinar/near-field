@@ -11,6 +11,7 @@ Hover is binary. CSS has nothing between "not hovering" and "hovering", so every
 - Zero re-renders. The field writes styles outside React's render cycle.
 - One pointer listener and one rAF loop total, no matter how many elements subscribe.
 - Core is about 1.5KB min+gzip; the whole package with all three components is about 3.5KB. No dependencies.
+- React optional: `near-field/vanilla` ships the same primitive and effects with no framework at all.
 
 ```bash
 npm install near-field
@@ -96,6 +97,47 @@ import { Magnetic, Tilt, Glow } from "near-field";
 
 All three render a wrapper element (`span` for Magnetic and Glow, `div` for Tilt; change it with `as`) and pass through arbitrary HTML attributes.
 
+## Vanilla (no React)
+
+Everything above, with no framework. Import from `near-field/vanilla` and React never enters the bundle (about 3KB min+gzip with all three effects; the React peer dependency is optional).
+
+```js
+import { nearField, magnetic, tilt, glow } from "near-field/vanilla";
+
+// the primitive: same options as useNearField, returns a cleanup
+const stop = nearField(document.querySelector(".card"), { radius: 140 });
+
+// the effects: attach to the element you already have, returns a cleanup
+magnetic(document.querySelector(".cta"), { strength: 0.3 });
+tilt(document.querySelector(".cover"), { max: 6 });
+glow(document.querySelector(".card"), { color: "rgba(120, 170, 255, 0.3)" });
+```
+
+`nearField(el, options)` takes `radius`, `onFrame`, and `cssVars`, exactly like the hook. The effects take the same options as their components (minus `as`; they attach to your element instead of rendering a wrapper) and share the same field, springs, reduced-motion handling, and touch press states. Every function returns a cleanup that unregisters the element and restores its inline styles.
+
+### No bundler
+
+The build uses only relative imports, so a plain HTML page can load it straight from a CDN. No install, no build step:
+
+```html
+<script type="module">
+  import { magnetic, glow } from "https://cdn.jsdelivr.net/npm/near-field@0.2/dist/vanilla.js";
+
+  magnetic(document.querySelector(".cta"));
+  glow(document.querySelector(".card"));
+</script>
+```
+
+To keep the `near-field/vanilla` import name (or point it at a local `node_modules` copy), add an import map instead:
+
+```html
+<script type="importmap">
+  { "imports": { "near-field/vanilla": "https://cdn.jsdelivr.net/npm/near-field@0.2/dist/vanilla.js" } }
+</script>
+```
+
+The vanilla entry also re-exports the framework-free core (`registerElement`, `computeFrame`, `createSpring`, `springPresets`, `prefersReducedMotion`, `subscribeReducedMotion`) for building custom adapters.
+
 ## Input handling, by design
 
 - **Reduced motion**: positional effects (Magnetic, Tilt) collapse to rest under `prefers-reduced-motion`. Glow is opacity-only, so it may opt in to remain with `respectReducedMotion={false}`.
@@ -108,7 +150,7 @@ One module-level pointer field: a single passive `pointermove` listener and a si
 
 Springs are a ~30 line semi-implicit Euler integrator running at a fixed 120Hz substep, so the feel is identical across display refresh rates. No animation library dependency.
 
-The field and spring are framework-free internally; the React layer is a thin adapter, which leaves room for vanilla or Vue adapters later.
+The field and spring are framework-free internally; the React layer and the vanilla entry are both thin adapters over the same core, which leaves room for a Vue adapter later.
 
 ## License
 
