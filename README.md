@@ -1,3 +1,8 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/banner-dark.png">
+  <img alt="near-field: cursor proximity as a CSS input" src=".github/banner-light.png">
+</picture>
+
 # near-field
 
 Cursor proximity as a CSS input.
