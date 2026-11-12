@@ -18,10 +18,10 @@
   "author": "Thilina Rathnayaka (https://thilina.dev)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/edward-126/near-field.git"
+    "url": "git+https://github.com/itsthilinar/near-field.git"
   },
   "homepage": "https://nearfield.thilina.dev",
-  "bugs": "https://github.com/edward-126/near-field/issues",
+  "bugs": "https://github.com/itsthilinar/near-field/issues",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
