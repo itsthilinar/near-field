@@ -16,7 +16,7 @@ Hover is binary. CSS has nothing between "not hovering" and "hovering", so every
 - Zero re-renders. The field writes styles outside React's render cycle.
 - One pointer listener and one rAF loop total, no matter how many elements subscribe.
 - Core is about 1.5KB min+gzip; the whole package with all three components is about 3.5KB. No dependencies.
-- React optional: `near-field/vanilla` ships the same primitive and effects with no framework at all.
+- React optional: `near-field/vue` ships a Vue 3 composable, directives, and components, and `near-field/vanilla` ships the same primitive and effects with no framework at all.
 
 ```bash
 npm install near-field
@@ -126,7 +126,7 @@ The build uses only relative imports, so a plain HTML page can load it straight 
 
 ```html
 <script type="module">
-  import { magnetic, glow } from "https://cdn.jsdelivr.net/npm/near-field@0.2/dist/vanilla.js";
+  import { magnetic, glow } from "https://cdn.jsdelivr.net/npm/near-field@0.3/dist/vanilla.js";
 
   magnetic(document.querySelector(".cta"));
   glow(document.querySelector(".card"));
@@ -137,17 +137,78 @@ To keep the `near-field/vanilla` import name (or point it at a local `node_modul
 
 ```html
 <script type="importmap">
-  { "imports": { "near-field/vanilla": "https://cdn.jsdelivr.net/npm/near-field@0.2/dist/vanilla.js" } }
+  { "imports": { "near-field/vanilla": "https://cdn.jsdelivr.net/npm/near-field@0.3/dist/vanilla.js" } }
 </script>
 ```
 
 The vanilla entry also re-exports the framework-free core (`registerElement`, `computeFrame`, `createSpring`, `springPresets`, `prefersReducedMotion`, `subscribeReducedMotion`) for building custom adapters.
 
+## Vue
+
+The same primitive and effects for Vue 3.3 and up. Import from `near-field/vue`; React never enters the bundle (about 4.2KB min+gzip with everything; the Vue peer dependency is optional like React's).
+
+### The composable
+
+`useNearField(target, options)` takes a template ref (an element or a component) and writes the same custom properties. Options can be plain values, refs, or getters and stay live without re-registering. Nothing is reactive per frame, so the component never re-renders.
+
+```vue
+<script setup>
+import { ref } from "vue";
+import { useNearField } from "near-field/vue";
+
+const card = ref(null);
+useNearField(card, { radius: 140 });
+</script>
+
+<template>
+  <div ref="card" class="card">...</div>
+</template>
+```
+
+It stops on its own when the component unmounts, follows the ref through `v-if`, and returns a `stop` function for stopping early. Options: `radius`, `onFrame`, `cssVars`, `disabled`, same as the React hook. For a reactive value, opt in through the callback: `onFrame: (f) => (proximity.value = f.proximity)`.
+
+### Directives
+
+Attach to an element you already have. In `<script setup>` the imports register themselves.
+
+```vue
+<script setup>
+import { vNearField, vMagnetic, vTilt, vGlow } from "near-field/vue";
+</script>
+
+<template>
+  <div v-near-field="{ radius: 140 }" class="card">...</div>
+  <button v-magnetic="{ strength: 0.3 }">Get started</button>
+  <img v-tilt="{ max: 6 }" src="/cover.png" alt="" />
+  <div v-glow="{ color: 'rgba(120, 170, 255, 0.3)' }" class="card">...</div>
+</template>
+```
+
+The effect directives take the same options as the vanilla functions and only restart when an option value actually changes, so an inline object is fine. `v-glow` appends its overlay to the element and puts it back if a re-render replaces the element's children.
+
+### Components
+
+Same names, props, and defaults as the React components, including `as`.
+
+```vue
+<script setup>
+import { Magnetic, Tilt, Glow } from "near-field/vue";
+</script>
+
+<template>
+  <Magnetic :strength="0.3"><button>Get started</button></Magnetic>
+  <Tilt :max="6"><img src="/cover.png" alt="" /></Tilt>
+  <Glow color="rgba(120, 170, 255, 0.3)"><div class="card">...</div></Glow>
+</template>
+```
+
+The Vue entry also exports `usePrefersReducedMotion()` (a readonly ref) and re-exports the framework-free core, like the vanilla entry.
+
 ## Input handling, by design
 
 - **Reduced motion**: positional effects (Magnetic, Tilt) collapse to rest under `prefers-reduced-motion`. Glow is opacity-only, so it may opt in to remain with `respectReducedMotion={false}`.
 - **Touch and coarse pointers**: there is no "near" on a touchscreen, so the field never activates. The packaged components degrade to a tuned press state instead.
-- **SSR-safe**: nothing touches `window` at import time. Works with React 18 and 19.
+- **SSR-safe**: nothing touches `window` at import time. Works with React 18 and 19, Vue 3.3 and up (server rendering included), or no framework.
 
 ## How it works
 
@@ -155,7 +216,7 @@ One module-level pointer field: a single passive `pointermove` listener and a si
 
 Springs are a ~30 line semi-implicit Euler integrator running at a fixed 120Hz substep, so the feel is identical across display refresh rates. No animation library dependency.
 
-The field and spring are framework-free internally; the React layer and the vanilla entry are both thin adapters over the same core, which leaves room for a Vue adapter later.
+The field and spring are framework-free internally; the React layer, the Vue entry, and the vanilla entry are all thin adapters over the same core.
 
 ## License
 

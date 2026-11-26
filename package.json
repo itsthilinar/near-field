@@ -1,7 +1,7 @@
 {
   "name": "near-field",
-  "version": "0.2.0",
-  "description": "Cursor proximity as a CSS input. One tiny import exposes how close the pointer is to an element as custom properties, plus three pre-tuned effects built on that primitive.",
+  "version": "0.3.0",
+  "description": "Cursor proximity as a CSS input. One tiny import exposes how close the pointer is to an element as custom properties, plus three pre-tuned effects built on that primitive. React, Vue, or no framework.",
   "keywords": [
     "proximity",
     "cursor",
@@ -12,6 +12,7 @@
     "hover",
     "css-variables",
     "react",
+    "vue",
     "spring"
   ],
   "license": "MIT",
@@ -36,6 +37,11 @@
       "types": "./dist/vanilla.d.ts",
       "import": "./dist/vanilla.js",
       "require": "./dist/vanilla.cjs"
+    },
+    "./vue": {
+      "types": "./dist/vue.d.ts",
+      "import": "./dist/vue.js",
+      "require": "./dist/vue.cjs"
     }
   },
   "files": [
@@ -50,19 +56,25 @@
     "prepublishOnly": "npm run typecheck && npm run test && npm run build"
   },
   "peerDependencies": {
-    "react": "^18.0.0 || ^19.0.0"
+    "react": "^18.0.0 || ^19.0.0",
+    "vue": "^3.3.0"
   },
   "peerDependenciesMeta": {
     "react": {
+      "optional": true
+    },
+    "vue": {
       "optional": true
     }
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
+    "@vue/test-utils": "^2.6.0",
     "jsdom": "^26.0.0",
     "react": "^19.0.0",
     "tsup": "^8.0.0",
     "typescript": "^5.5.0",
-    "vitest": "^3.0.0"
+    "vitest": "^3.0.0",
+    "vue": "^3.5.46"
   }
 }
